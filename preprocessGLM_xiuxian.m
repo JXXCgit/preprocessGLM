@@ -2,8 +2,8 @@ clc; clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %these steps fir unzip .gz file and delete .gz file
 Maindir = 'E:\xiuxian\VRdata\BOTREC\newtrial\social-nonsocial'   % root inputdir for sublist
-sublist = dir(fullfile(MainSdir, 'sub*')) 
-filelist = dir(fullfile(MainSdir, '**\*.nii.gz*')) %list of the unzipped .gz file 
+sublist = dir(fullfile(Maindir, 'sub*')) 
+filelist = dir(fullfile(Maindir, '**\*.nii.gz*')) %list of the unzipped .gz file 
 % filelist = dir(fullfile(rootdir, '**', '*.gz')) %list of the unzipped .gz file 
 filelist = filelist(~[filelist.isdir]); 
 % unzip .nii.gz files 
@@ -19,23 +19,31 @@ BIDsdir = '\BIDs'
 Outputdir = '\results'  
 Behaviordir = '\behaviordata';
 spmDir = '\1st_level\';
+spmmDir = '\2nd_level\';
+
 sublist = dir(fullfile(Maindir, BIDsdir, 'sub*'))  %list of .nii file after unzipping
 BIDslist = dir(fullfile(Maindir, BIDsdir, '**\*.nii*')) %list of the unzipped .gz file 
 timinglist = dir(fullfile(Maindir, Behaviordir, '**\*Model_Parameter.xlsx*'))
 timingSuffix = '_Model_Parameter.xlsx'; 
-%---Navigate to timing directory and create .txt files for each run---%
+%------------------------------------------------------create folders for first and second level
 for s = 1:numel(sublist)
     %See whether output directory exists; if it doesn't, create it
     subpath=[Maindir, Outputdir, filesep, sublist(s).name]
     if ~exist(subpath)
         mkdir(subpath)
     end
-    outputdir = [subpath spmDir]
-    if ~exist(outputdir)
-        mkdir(outputdir)
+    fstdir = [subpath spmDir]
+    if ~exist(fstdir)
+        mkdir(fstdir)
     end
-end 
+    snddir = [subpath spmmDir]
+    if ~exist(snddir)
+        mkdir(snddir)
+    end
+end
+%------------------------------------------------------direct to the original 'Model_Parameter' file to extract timing file to txt
 cd([Maindir Behaviordir])
+
 for k=1:numel(timinglist.name)
         currD=timinglist(k).folder
         cd(currD)
